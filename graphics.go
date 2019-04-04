@@ -27,6 +27,8 @@ func InitGraphics() {
 	gl.GetIntegerv(gl.MAX_VERTEX_ATTRIBS, &data)
 	log.Println("Max Vertex Attribs: ", data)
 	gl.Enable(gl.POLYGON_SMOOTH)
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+	gl.Enable(gl.BLEND)
 }
 
 // ShaderID ...

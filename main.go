@@ -23,7 +23,7 @@ func clear(pixels []byte) {
 }
 
 func main() {
-	// todo(ryan): why does sdl's init sometimes start hanging????
+	// TODO(ryan): why does sdl's init sometimes start hanging????
 	err := sdl.Init(sdl.INIT_EVERYTHING)
 	if err != nil {
 		panic(err)
@@ -31,8 +31,9 @@ func main() {
 		log.Println("SDL initialized")
 		defer sdl.Quit()
 	}
-	sdl.GLSetAttribute(sdl.GL_MULTISAMPLEBUFFERS, 1)
-	sdl.GLSetAttribute(sdl.GL_MULTISAMPLESAMPLES, 16)
+	// Make things not look like garbage
+	// sdl.GLSetAttribute(sdl.GL_MULTISAMPLEBUFFERS, 1)
+	// sdl.GLSetAttribute(sdl.GL_MULTISAMPLESAMPLES, 16)
 	window, err := sdl.CreateWindow(
 		"OpenGL Test",
 		sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
@@ -68,11 +69,24 @@ func main() {
 			}
 		}
 		ClearScreen(0.5, 0.5, 0.8)
-		for i := 0; i < 10; i++ {
-			// TODO: implement alpha blending
-			SetDrawColor(1.0-float32(i)*0.1, 0.0+float32(i)*0.1, 0.0+float32(i)*0.1, 1.0-float32(i)*0.1)
-			DrawRectangle(100+float32(i*32), 100, 32, 32)
-			DrawTriangle(100+float32(i*32), 200, 116+float32(i*32), 168, 132+float32(i*32), 200)
+		limit := 16
+		var xOffset float32 = 32
+		var yOffset float32 = 32
+		var ySeparator float32 = 8
+		for i := 0; i < limit; i++ {
+			SetDrawColor(
+				0.0+float32(i)/float32(limit),
+				1.0-float32(i)/float32(limit),
+				0.0+float32(i)/float32(limit),
+				1.0-float32(i)/float32(limit))
+			DrawTriangle(
+				xOffset+float32(i*32), yOffset+ySeparator,
+				xOffset+float32(i*32)+16, yOffset+ySeparator-24,
+				xOffset+float32(i*32)+32, yOffset+ySeparator)
+			DrawRectangle(
+				xOffset+float32(i*32),
+				yOffset+2*ySeparator,
+				32, 32)
 		}
 		stopTime := time.Since(beginTime).Seconds() * 1000
 		window.GLSwap()
