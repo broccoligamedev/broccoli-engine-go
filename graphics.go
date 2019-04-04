@@ -462,19 +462,41 @@ func DrawTriangle(x1, y1, x2, y2, x3, y3 float32) {
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 }
 
+// SetDrawColor ...
 func SetDrawColor(r, g, b, a float32) {
 	defaultShader.SetFloat32Vec4("inColor", r, g, b, a)
 }
 
-func DrawRect(x, y, width, height float32) {
-
+// DrawRect ...
+func DrawRectangle(x, y, width, height float32) {
+	// TODO(ryan): redundant usage of projection matrix since it never changes for our purpose (except
+	// during screen resizing).
+	// TODO(ryan): we should be batching primitives too
+	vertices := []float32{
+		x, y,
+		x + width, y,
+		x + width, y + height,
+		x, y + height,
+	}
+	indices := []uint32{
+		0, 1, 3,
+		1, 2, 3,
+	}
+	GenBindBuffer(gl.ELEMENT_ARRAY_BUFFER)
+	BufferDataUint32(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW)
+	projection := mathgl.Ortho(0, 600, 600, 0, -1, 1)
+	VBO := GenBindBuffer(gl.ARRAY_BUFFER)
+	BindBuffer(gl.ARRAY_BUFFER, VBO)
+	BufferDataFloat32(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
+	gl.VertexAttribPointer(0, 2, gl.FLOAT, false, 2*4, gl.PtrOffset(0))
+	gl.EnableVertexAttribArray(0)
+	defaultShader.Use()
+	defaultShader.SetMat4("projection", projection)
+	gl.DrawElements(gl.TRIANGLES, int32(len(vertices)), gl.UNSIGNED_INT, gl.PtrOffset(0))
 }
 
+// ClearScreen ...
 func ClearScreen(r, g, b float32) {
 	gl.ClearColor(r, g, b, 1.0)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
-}
-
-func Render() {
-
 }

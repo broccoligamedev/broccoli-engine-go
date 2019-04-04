@@ -71,7 +71,8 @@ func main() {
 		for i := 0; i < 10; i++ {
 			// TODO: implement alpha blending
 			SetDrawColor(1.0-float32(i)*0.1, 0.0+float32(i)*0.1, 0.0+float32(i)*0.1, 1.0-float32(i)*0.1)
-			DrawTriangle(100+float32(i*32), 100, 120+float32(i*32), 120, 120+float32(i*32), 100)
+			DrawRectangle(100+float32(i*32), 100, 32, 32)
+			DrawTriangle(100+float32(i*32), 200, 116+float32(i*32), 168, 132+float32(i*32), 200)
 		}
 		stopTime := time.Since(beginTime).Seconds() * 1000
 		window.GLSwap()
