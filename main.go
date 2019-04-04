@@ -87,6 +87,12 @@ func main() {
 				xOffset+float32(i*32),
 				yOffset+2*ySeparator,
 				32, 32)
+			DrawPolygon(
+				100, 100,
+				120, 120,
+				100, 140,
+				80, 120,
+			)
 		}
 		stopTime := time.Since(beginTime).Seconds() * 1000
 		window.GLSwap()

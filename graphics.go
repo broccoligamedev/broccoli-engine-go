@@ -497,6 +497,29 @@ func DrawRectangle(x, y, width, height float32) {
 	gl.DrawElements(gl.TRIANGLES, int32(len(vertices)), gl.UNSIGNED_INT, gl.PtrOffset(0))
 }
 
+// DrawPolygon ...
+func DrawPolygon(vertices ...float32) error {
+	//TODO(ryan): this is using 0,0 as the origin for some reason?
+	// TODO(ryan): We could rewrite the other functions in terms of
+	// this function. But is there a reason not to?
+	if len(vertices)%2 != 0 {
+		return errors.New("number of vertex components must be even")
+	}
+	//log.Println(len(vertices))
+	//GenBindBuffer(gl.ELEMENT_ARRAY_BUFFER)
+	//BufferDataUint32(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW)
+	projection := mathgl.Ortho(0, 600, 600, 0, -1, 1)
+	VBO := GenBindBuffer(gl.ARRAY_BUFFER)
+	BindBuffer(gl.ARRAY_BUFFER, VBO)
+	BufferDataFloat32(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
+	gl.VertexAttribPointer(0, 2, gl.FLOAT, false, 2*4, gl.PtrOffset(0))
+	gl.EnableVertexAttribArray(0)
+	defaultShader.Use()
+	defaultShader.SetMat4("projection", projection)
+	gl.DrawArrays(gl.TRIANGLE_FAN, 0, int32(len(vertices)))
+	return nil
+}
+
 // ClearScreen ...
 func ClearScreen(r, g, b float32) {
 	gl.ClearColor(r, g, b, 1.0)
